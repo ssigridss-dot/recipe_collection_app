@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RecipeCollectionAPI.Models;
+namespace RecipeCollection.API.Models;
 
 public class Recipe
 {
@@ -8,18 +8,20 @@ public class Recipe
 
     [Required]
     [MaxLength(100)]
-    public string Name { get; set; } = "";
+    public string Name { get; set; }
 
     [Required]
-    [MaxLength(100)]
-    public string Category { get; set; } = "";
+    [MaxLength(1000)]
+    public string Description { get; set; }
 
     [Required]
-    public string Ingredients { get; set; } = "";
+    public string Ingredients { get; set; }
 
     [Required]
-    public string Instructions { get; set; } = "";
-
-    [Range(1, 1000)]
     public int CookingTime { get; set; }
+
+    [Required]
+    public string Category { get; set; }
+
+    public string? ImageUrl { get; set; }
 }
