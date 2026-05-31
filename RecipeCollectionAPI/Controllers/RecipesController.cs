@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RecipeCollection.API.Data;
 using RecipeCollection.API.Models;
+using RecipeCollection.API.DTOs;
 
 namespace RecipeCollection.API.Controllers;
 
@@ -16,52 +17,115 @@ public class RecipesController : ControllerBase
         _context = context;
     }
 
+    // GET ALL
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
+    public async Task<ActionResult<IEnumerable<RecipeDto>>> GetRecipes()
     {
-        return await _context.Recipes.ToListAsync();
+        var recipes = await _context.Recipes
+            .Select(r => new RecipeDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Instructions = r.Instructions,
+                CookingTime = r.CookingTime,
+                Category = r.Category,
+                ImageUrl = r.ImageUrl
+            })
+            .ToListAsync();
+
+        return Ok(recipes);
     }
 
+    // GET BY ID
     [HttpGet("{id}")]
-    public async Task<ActionResult<Recipe>> GetRecipe(int id)
+    public async Task<ActionResult<RecipeDto>> GetRecipe(int id)
     {
         var recipe = await _context.Recipes.FindAsync(id);
 
         if (recipe == null)
             return NotFound();
 
-        return recipe;
+        return new RecipeDto
+        {
+            Id = recipe.Id,
+            Name = recipe.Name,
+            Instructions = recipe.Instructions,
+            CookingTime = recipe.CookingTime,
+            Category = recipe.Category,
+            ImageUrl = recipe.ImageUrl
+        };
     }
 
+    // CREATE + IMAGE UPLOAD
     [HttpPost]
-    public async Task<ActionResult<Recipe>> CreateRecipe(Recipe recipe)
+    public async Task<ActionResult<RecipeDto>> CreateRecipe(
+        [FromForm] CreateRecipeDto dto,
+        IFormFile? image)
     {
-        _context.Recipes.Add(recipe);
+        string? imageUrl = null;
 
+        if (image != null)
+        {
+            var fileName = Guid.NewGuid() + Path.GetExtension(image.FileName);
+
+            var path = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/images/recipes",
+                fileName);
+
+            using var stream = new FileStream(path, FileMode.Create);
+            await image.CopyToAsync(stream);
+
+            imageUrl = "/images/recipes/" + fileName;
+        }
+
+        var recipe = new Recipe
+        {
+            Name = dto.Name,
+            Instructions = dto.Instructions,
+            Ingredients = dto.Ingredients,
+            CookingTime = dto.CookingTime,
+            Category = dto.Category,
+            ImageUrl = imageUrl
+        };
+
+        _context.Recipes.Add(recipe);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(
-            nameof(GetRecipe),
-            new { id = recipe.Id },
-            recipe);
+        var result = new RecipeDto
+        {
+            Id = recipe.Id,
+            Name = recipe.Name,
+            Instructions = recipe.Instructions,
+            CookingTime = recipe.CookingTime,
+            Category = recipe.Category,
+            ImageUrl = recipe.ImageUrl
+        };
+
+        return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, result);
     }
 
+    // UPDATE
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateRecipe(
-        int id,
-        Recipe recipe)
+    public async Task<IActionResult> UpdateRecipe(int id, UpdateRecipeDto dto)
     {
-        if (id != recipe.Id)
-            return BadRequest();
+        var recipe = await _context.Recipes.FindAsync(id);
 
-        _context.Entry(recipe).State =
-            EntityState.Modified;
+        if (recipe == null)
+            return NotFound();
+
+        recipe.Name = dto.Name;
+        recipe.Instructions = dto.Instructions;
+        recipe.Ingredients = dto.Ingredients;
+        recipe.CookingTime = dto.CookingTime;
+        recipe.Category = dto.Category;
 
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
+    // DELETE
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRecipe(int id)
     {
@@ -70,8 +134,19 @@ public class RecipesController : ControllerBase
         if (recipe == null)
             return NotFound();
 
-        _context.Recipes.Remove(recipe);
+        // delete image file too
+        if (!string.IsNullOrEmpty(recipe.ImageUrl))
+        {
+            var fullPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                recipe.ImageUrl.TrimStart('/'));
 
+            if (System.IO.File.Exists(fullPath))
+                System.IO.File.Delete(fullPath);
+        }
+
+        _context.Recipes.Remove(recipe);
         await _context.SaveChangesAsync();
 
         return NoContent();

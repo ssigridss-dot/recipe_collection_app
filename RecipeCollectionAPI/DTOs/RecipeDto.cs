@@ -1,27 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace RecipeCollection.API.DTOs;
 
-namespace RecipeCollection.API.Models;
-
-public class Recipe
+public class RecipeDto
 {
     public int Id { get; set; }
-
-    [Required]
-    [MaxLength(100)]
     public string Name { get; set; } = "";
-
-    [Required]
     public string Ingredients { get; set; } = "";
-
-    [Required]
     public string Instructions { get; set; } = "";
-
-    [Required]
     public int CookingTime { get; set; }
-
-    [Required]
-    [MaxLength(50)]
     public string Category { get; set; } = "";
-
     public string? ImageUrl { get; set; }
 }

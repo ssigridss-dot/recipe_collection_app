@@ -10,5 +10,5 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Recipe> Recipes { get; set; }
+    public DbSet<Recipe> Recipes => Set<Recipe>();
 }
