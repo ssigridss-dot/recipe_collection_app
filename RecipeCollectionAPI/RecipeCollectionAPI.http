@@ -1,6 +1,6 @@
 @RecipeCollectionAPI_HostAddress = http://localhost:5229
 
-GET {{RecipeCollectionAPI_HostAddress}}/weatherforecast/
+GET {{RecipeCollectionAPI_HostAddress}}/api/recipes
 Accept: application/json
 
 ###
