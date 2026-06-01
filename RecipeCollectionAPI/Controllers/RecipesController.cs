@@ -107,7 +107,10 @@ public class RecipesController : ControllerBase
 
     // UPDATE
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateRecipe(int id, UpdateRecipeDto dto)
+    public async Task<IActionResult> UpdateRecipe(
+    int id,
+    [FromForm] UpdateRecipeDto dto,
+    IFormFile? image)
     {
         var recipe = await _context.Recipes.FindAsync(id);
 
@@ -115,10 +118,45 @@ public class RecipesController : ControllerBase
             return NotFound();
 
         recipe.Name = dto.Name;
-        recipe.Instructions = dto.Instructions;
         recipe.Ingredients = dto.Ingredients;
+        recipe.Instructions = dto.Instructions;
         recipe.CookingTime = dto.CookingTime;
         recipe.Category = dto.Category;
+
+        if (image != null)
+        {
+            // kustuta vana pilt
+
+            if (!string.IsNullOrEmpty(recipe.ImageUrl))
+            {
+                var oldPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    recipe.ImageUrl.TrimStart('/'));
+
+                if (System.IO.File.Exists(oldPath))
+                    System.IO.File.Delete(oldPath);
+            }
+
+            // salvesta uus pilt
+
+            var fileName =
+                Guid.NewGuid() +
+                Path.GetExtension(image.FileName);
+
+            var path = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/images/recipes",
+                fileName);
+
+            using var stream =
+                new FileStream(path, FileMode.Create);
+
+            await image.CopyToAsync(stream);
+
+            recipe.ImageUrl =
+                "/images/recipes/" + fileName;
+        }
 
         await _context.SaveChangesAsync();
 
