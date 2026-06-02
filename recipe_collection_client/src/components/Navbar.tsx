@@ -1,17 +1,33 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
+import { useTheme } from "../hooks/useTheme";
 
 function Navbar() {
+    const {
+        darkMode,
+        toggleTheme
+    } = useTheme();
+
     return (
         <nav className="navbar">
-            <h2>Retseptikogu</h2>
+
+            <h2>Recipe Collection</h2>
 
             <div>
-                <Link to="/">Retseptid</Link>
+                <Link to="/">
+                    Recipes
+                </Link>
 
                 <Link to="/create">
-                    Lisa retsept
+                    Add Recipe
                 </Link>
+
+                <button className="theme-button" onClick={toggleTheme}>
+                    {darkMode
+                        ? "☀ Light"
+                        : "🌙 Dark"}
+                </button>
             </div>
+
         </nav>
     );
 }

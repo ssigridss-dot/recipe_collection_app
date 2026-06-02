@@ -1,47 +1,99 @@
-import type { Recipe } from "../types/Recipe";
+﻿import type { Recipe } from "../types/Recipe";
+import { Link } from "react-router-dom";
 
 interface Props {
     recipe: Recipe;
     onDelete: (id: number) => void;
 }
 
-function RecipeCard({ recipe, onDelete }: Props) {
+function RecipeCard({
+    recipe,
+    onDelete
+}: Props) {
+
+    const imageUrl =
+        recipe.imageUrl
+            ? `https://localhost:7060${recipe.imageUrl}`
+            : "";
+
     return (
+
         <div className="recipe-card">
 
-            <img
-                src={recipe.imageUrl}
-                alt={recipe.name}
-            />
+            {recipe.imageUrl && (
 
-            <h3>{recipe.name}</h3>
+                <Link
+                    to={`/recipe/${recipe.id}`}
+                >
 
-            <p>{recipe.cookingTime}</p>
+                    <img
+                        className="recipe-image"
+                        src={imageUrl}
+                        alt={recipe.name}
+                    />
 
-            <p>{recipe.ingredients}</p>
+                </Link>
 
-            <p>{recipe.instructions}</p>
+            )}
 
-            <p>
-                <strong>Category:</strong> {recipe.category}
-            </p>
+            <div className="recipe-content">
 
-            <button
-                onClick={() =>
-                    window.location.href =
-                    `/edit/${recipe.id}`
-                }
-            >
-                Edit
-            </button>
+                <Link
+                    to={`/recipe/${recipe.id}`}
+                    className="recipe-link"
+                >
 
-            <button
-                onClick={() => onDelete(recipe.id)}
-            >
-                Delete
-            </button>
+                    <h2>
+                        {recipe.name}
+                    </h2>
+
+                </Link>
+
+                <div className="recipe-info">
+
+                    <span className="badge">
+
+                        {recipe.category}
+
+                    </span>
+
+                    <span>
+
+                        ⏱ {recipe.cookingTime} min
+
+                    </span>
+
+                </div>
+
+                <div className="recipe-actions">
+
+                    <Link
+                        to={`/edit/${recipe.id}`}
+                    >
+
+                        <button
+                            className="edit-btn"
+                        >
+                            Edit
+                        </button>
+
+                    </Link>
+
+                    <button
+                        className="delete-btn"
+                        onClick={() =>
+                            onDelete(recipe.id)
+                        }
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
 
         </div>
+
     );
 }
 

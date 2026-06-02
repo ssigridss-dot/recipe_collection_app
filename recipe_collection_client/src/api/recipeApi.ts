@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const recipeApi = axios.create({
-    baseURL: "https://localhost:7024/api"
+    baseURL: "https://localhost:7060/api"
 });
 
 export default recipeApi;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeCollection.API.Data;
-using RecipeCollection.API.Models;
 using RecipeCollection.API.DTOs;
+using RecipeCollection.API.Models;
 
 namespace RecipeCollection.API.Controllers;
 
@@ -18,6 +18,7 @@ public class RecipesController : ControllerBase
     }
 
     // GET ALL
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RecipeDto>>> GetRecipes()
     {
@@ -26,6 +27,7 @@ public class RecipesController : ControllerBase
             {
                 Id = r.Id,
                 Name = r.Name,
+                Ingredients = r.Ingredients,
                 Instructions = r.Instructions,
                 CookingTime = r.CookingTime,
                 Category = r.Category,
@@ -37,6 +39,7 @@ public class RecipesController : ControllerBase
     }
 
     // GET BY ID
+
     [HttpGet("{id}")]
     public async Task<ActionResult<RecipeDto>> GetRecipe(int id)
     {
@@ -49,6 +52,7 @@ public class RecipesController : ControllerBase
         {
             Id = recipe.Id,
             Name = recipe.Name,
+            Ingredients = recipe.Ingredients,
             Instructions = recipe.Instructions,
             CookingTime = recipe.CookingTime,
             Category = recipe.Category,
@@ -56,7 +60,8 @@ public class RecipesController : ControllerBase
         };
     }
 
-    // CREATE + IMAGE UPLOAD
+    // CREATE
+
     [HttpPost]
     public async Task<ActionResult<RecipeDto>> CreateRecipe(
         [FromForm] CreateRecipeDto dto,
@@ -66,53 +71,76 @@ public class RecipesController : ControllerBase
 
         if (image != null)
         {
-            var fileName = Guid.NewGuid() + Path.GetExtension(image.FileName);
+            var fileName =
+                Guid.NewGuid() +
+                Path.GetExtension(image.FileName);
 
-            var path = Path.Combine(
+            var folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),
-                "wwwroot/images/recipes",
-                fileName);
+                "wwwroot",
+                "images",
+                "recipes");
 
-            using var stream = new FileStream(path, FileMode.Create);
+            Directory.CreateDirectory(folderPath);
+
+            var filePath =
+                Path.Combine(
+                    folderPath,
+                    fileName);
+
+            using var stream =
+                new FileStream(
+                    filePath,
+                    FileMode.Create);
+
             await image.CopyToAsync(stream);
 
-            imageUrl = "/images/recipes/" + fileName;
+            imageUrl =
+                "/images/recipes/" +
+                fileName;
         }
 
         var recipe = new Recipe
         {
             Name = dto.Name,
-            Instructions = dto.Instructions,
             Ingredients = dto.Ingredients,
+            Instructions = dto.Instructions,
             CookingTime = dto.CookingTime,
             Category = dto.Category,
             ImageUrl = imageUrl
         };
 
         _context.Recipes.Add(recipe);
+
         await _context.SaveChangesAsync();
 
         var result = new RecipeDto
         {
             Id = recipe.Id,
             Name = recipe.Name,
+            Ingredients = recipe.Ingredients,
             Instructions = recipe.Instructions,
             CookingTime = recipe.CookingTime,
             Category = recipe.Category,
             ImageUrl = recipe.ImageUrl
         };
 
-        return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, result);
+        return CreatedAtAction(
+            nameof(GetRecipe),
+            new { id = recipe.Id },
+            result);
     }
 
     // UPDATE
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateRecipe(
-    int id,
-    [FromForm] UpdateRecipeDto dto,
-    IFormFile? image)
+        int id,
+        [FromForm] UpdateRecipeDto dto,
+        IFormFile? image)
     {
-        var recipe = await _context.Recipes.FindAsync(id);
+        var recipe =
+            await _context.Recipes.FindAsync(id);
 
         if (recipe == null)
             return NotFound();
@@ -125,37 +153,48 @@ public class RecipesController : ControllerBase
 
         if (image != null)
         {
-            // kustuta vana pilt
-
             if (!string.IsNullOrEmpty(recipe.ImageUrl))
             {
-                var oldPath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    recipe.ImageUrl.TrimStart('/'));
+                var oldImagePath =
+                    Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        recipe.ImageUrl.TrimStart('/'));
 
-                if (System.IO.File.Exists(oldPath))
-                    System.IO.File.Delete(oldPath);
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
             }
-
-            // salvesta uus pilt
 
             var fileName =
                 Guid.NewGuid() +
                 Path.GetExtension(image.FileName);
 
-            var path = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "wwwroot/images/recipes",
-                fileName);
+            var folderPath =
+                Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "recipes");
+
+            Directory.CreateDirectory(folderPath);
+
+            var filePath =
+                Path.Combine(
+                    folderPath,
+                    fileName);
 
             using var stream =
-                new FileStream(path, FileMode.Create);
+                new FileStream(
+                    filePath,
+                    FileMode.Create);
 
             await image.CopyToAsync(stream);
 
             recipe.ImageUrl =
-                "/images/recipes/" + fileName;
+                "/images/recipes/" +
+                fileName;
         }
 
         await _context.SaveChangesAsync();
@@ -164,27 +203,32 @@ public class RecipesController : ControllerBase
     }
 
     // DELETE
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRecipe(int id)
     {
-        var recipe = await _context.Recipes.FindAsync(id);
+        var recipe =
+            await _context.Recipes.FindAsync(id);
 
         if (recipe == null)
             return NotFound();
 
-        // delete image file too
         if (!string.IsNullOrEmpty(recipe.ImageUrl))
         {
-            var fullPath = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "wwwroot",
-                recipe.ImageUrl.TrimStart('/'));
+            var imagePath =
+                Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    recipe.ImageUrl.TrimStart('/'));
 
-            if (System.IO.File.Exists(fullPath))
-                System.IO.File.Delete(fullPath);
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
         }
 
         _context.Recipes.Remove(recipe);
+
         await _context.SaveChangesAsync();
 
         return NoContent();
