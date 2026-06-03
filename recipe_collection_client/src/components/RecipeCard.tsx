@@ -74,7 +74,7 @@ function RecipeCard({
                         <button
                             className="edit-btn"
                         >
-                            Edit
+                            Muuda
                         </button>
 
                     </Link>
@@ -85,7 +85,7 @@ function RecipeCard({
                             onDelete(recipe.id)
                         }
                     >
-                        Delete
+                        Kustuta
                     </button>
 
                 </div>

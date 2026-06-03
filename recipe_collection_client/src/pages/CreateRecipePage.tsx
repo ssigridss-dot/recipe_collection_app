@@ -1,4 +1,4 @@
-import RecipeForm from "../components/RecipeForm";
+﻿import RecipeForm from "../components/RecipeForm";
 import recipeApi from "../api/recipeApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ function CreateRecipePage() {
                 );
 
                 toast.success(
-                    "Recipe created successfully."
+                    "Retsept lisatud."
                 );
 
                 navigate("/");
@@ -64,7 +64,7 @@ function CreateRecipePage() {
                 }
 
                 toast.error(
-                    "Failed to create recipe."
+                    "Retsepti ei õnnestunud lisada."
                 );
             }
         };
@@ -73,7 +73,7 @@ function CreateRecipePage() {
 
         <>
             <h1 className="page-title">
-                Add Recipe
+                Lisa retsept
             </h1>
 
             <RecipeForm

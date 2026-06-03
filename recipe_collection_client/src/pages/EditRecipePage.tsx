@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import RecipeForm from "../components/RecipeForm";
 import recipeApi from "../api/recipeApi";
@@ -36,7 +36,7 @@ function EditRecipePage() {
                 catch {
 
                     toast.error(
-                        "Failed to load recipe."
+                        "Retsepti ei õnnestunud laadida."
                     );
                 }
             };
@@ -58,7 +58,7 @@ function EditRecipePage() {
                 );
 
                 toast.success(
-                    "Recipe updated successfully."
+                    "Retsept edukalt muudetud."
                 );
 
                 navigate("/");
@@ -101,7 +101,7 @@ function EditRecipePage() {
                 }
 
                 toast.error(
-                    "Failed to update recipe."
+                    "Retsepti ei õnnestunud muuta."
                 );
             }
         };
@@ -110,7 +110,7 @@ function EditRecipePage() {
 
         return (
             <p>
-                Loading...
+                Laen...
             </p>
         );
 
@@ -120,7 +120,7 @@ function EditRecipePage() {
 
         <>
             <h1 className="page-title">
-                Edit Recipe
+                Muuda retsepti
             </h1>
 
             <RecipeForm

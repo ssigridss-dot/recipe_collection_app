@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import recipeApi from "../api/recipeApi";
 import type { Recipe } from "../types/Recipe";
@@ -30,7 +30,7 @@ function RecipeDetailsPage() {
             catch {
 
                 toast.error(
-                    "Failed to load recipe."
+                    "Retsepti ei õnnestunud laadida."
                 );
 
             }
@@ -42,7 +42,7 @@ function RecipeDetailsPage() {
 
     if (!recipe) {
 
-        return <p>Loading...</p>;
+        return <p>Laen...</p>;
 
     }
 
@@ -70,20 +70,20 @@ function RecipeDetailsPage() {
             <div className="details-info">
 
                 <p>
-                    <strong>Category:</strong>
+                    <strong>Kategooria:</strong>
                     {" "}
                     {recipe.category}
                 </p>
 
                 <p>
-                    <strong>Cooking Time:</strong>
+                    <strong>Valmistusaeg:</strong>
                     {" "}
                     {recipe.cookingTime} min
                 </p>
 
             </div>
 
-            <h2>Ingredients</h2>
+            <h2>Koostisosad</h2>
 
             <div className="details-box">
 
@@ -91,7 +91,7 @@ function RecipeDetailsPage() {
 
             </div>
 
-            <h2>Instructions</h2>
+            <h2>Valmistamine</h2>
 
             <div className="details-box">
 

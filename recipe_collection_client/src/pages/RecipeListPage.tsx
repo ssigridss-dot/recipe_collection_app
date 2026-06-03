@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import recipeApi from "../api/recipeApi";
 import type { Recipe } from "../types/Recipe";
 import RecipeCard from "../components/RecipeCard";
@@ -34,7 +34,7 @@ function RecipeListPage() {
             catch {
 
                 toast.error(
-                    "Failed to load recipes"
+                    "Retsepte ei õnnestunud laadida."
                 );
 
             }
@@ -49,7 +49,7 @@ function RecipeListPage() {
 
             const confirmed =
                 window.confirm(
-                    "Delete recipe?"
+                    "Kustutan retsepti?"
                 );
 
             if (!confirmed)
@@ -69,14 +69,14 @@ function RecipeListPage() {
                 );
 
                 toast.success(
-                    "Recipe deleted"
+                    "Retsept kustutatud."
                 );
 
             }
             catch {
 
                 toast.error(
-                    "Delete failed"
+                    "Kustutamine ei õnnestunud."
                 );
 
             }
@@ -84,7 +84,7 @@ function RecipeListPage() {
 
     const categories = [
 
-        "All",
+        "Kõik",
 
         ...Array.from(
             new Set(
@@ -108,7 +108,7 @@ function RecipeListPage() {
                     );
 
             const matchesCategory =
-                selectedCategory === "All" ||
+                selectedCategory === "Kõik" ||
                 recipe.category === selectedCategory;
 
             return (
@@ -126,7 +126,7 @@ function RecipeListPage() {
 
                 <input
                     type="text"
-                    placeholder="Search recipes..."
+                    placeholder="Otsi retsepti..."
                     value={search}
                     onChange={(e) =>
                         setSearch(
@@ -170,7 +170,7 @@ function RecipeListPage() {
                         textAlign: "center"
                     }}
                 >
-                    No recipes found.
+                    Retsepti ei leitud.
                 </p>
 
             )}

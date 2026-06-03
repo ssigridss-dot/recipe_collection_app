@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import type { Recipe } from "../types/Recipe";
 
 interface Props {
@@ -54,7 +54,7 @@ function RecipeForm({
         if (value.trim().length < 3) {
 
             setNameError(
-                "Recipe name must contain at least 3 characters."
+                "Retsepti pikkus peab olema vähemalt 3 tähte."
             );
 
             return false;
@@ -71,7 +71,7 @@ function RecipeForm({
         if (value.trim().length < 5) {
 
             setIngredientsError(
-                "Ingredients must contain at least 5 characters."
+                "Koostisosade pikkus peab olema vähemalt 5 tähte."
             );
 
             return false;
@@ -88,7 +88,7 @@ function RecipeForm({
         if (value.trim().length < 10) {
 
             setInstructionsError(
-                "Instructions must contain at least 10 characters."
+                "Valmistamisõpetuse pikkus peab olema vähemalt 10 tähte."
             );
 
             return false;
@@ -108,7 +108,7 @@ function RecipeForm({
         ) {
 
             setCookingTimeError(
-                "Cooking time must be greater than 0."
+                "Valmistusaeg peab olema suurem kui 0."
             );
 
             return false;
@@ -125,7 +125,7 @@ function RecipeForm({
         if (value.trim().length < 2) {
 
             setCategoryError(
-                "Category must contain at least 2 characters."
+                "Kategooria pikkus peab olema vähemalt 2 tähte."
             );
 
             return false;
@@ -170,7 +170,7 @@ function RecipeForm({
         );
 
         formData.append(
-            "cookingTime",
+            "cooking Time",
             cookingTime
         );
 
@@ -197,7 +197,7 @@ function RecipeForm({
 
             <input
                 type="text"
-                placeholder="Recipe Name"
+                placeholder="Retsepti nimi"
                 value={name}
                 onChange={(e) => {
 
@@ -219,7 +219,7 @@ function RecipeForm({
             )}
 
             <textarea
-                placeholder="Ingredients"
+                placeholder="Koostisosad"
                 value={ingredients}
                 onChange={(e) => {
 
@@ -241,7 +241,7 @@ function RecipeForm({
             )}
 
             <textarea
-                placeholder="Instructions"
+                placeholder="Valmistamine"
                 value={instructions}
                 onChange={(e) => {
 
@@ -264,7 +264,7 @@ function RecipeForm({
 
             <input
                 type="number"
-                placeholder="Cooking Time"
+                placeholder="Valmistusaeg"
                 value={cookingTime}
                 onChange={(e) => {
 
@@ -287,7 +287,7 @@ function RecipeForm({
 
             <input
                 type="text"
-                placeholder="Category"
+                placeholder="Kategooria"
                 value={category}
                 onChange={(e) => {
 
@@ -328,7 +328,7 @@ function RecipeForm({
             />
 
             <button type="submit">
-                Save Recipe
+                Salvesta retsept
             </button>
 
         </form>

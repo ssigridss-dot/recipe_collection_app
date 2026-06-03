@@ -10,21 +10,21 @@ function Navbar() {
     return (
         <nav className="navbar">
 
-            <h2>Recipe Collection</h2>
+            <h2>Retseptikogu</h2>
 
             <div>
                 <Link to="/">
-                    Recipes
+                    Retseptid
                 </Link>
 
                 <Link to="/create">
-                    Add Recipe
+                    Lisa retsept
                 </Link>
 
                 <button className="theme-button" onClick={toggleTheme}>
                     {darkMode
-                        ? "☀ Light"
-                        : "🌙 Dark"}
+                        ? "☀ Hele"
+                        : "🌙 Tume"}
                 </button>
             </div>
 
